@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     template: "%s — IPTV Portugal",
   },
   description:
-    "Subscrição IPTV Portugal: mais de 50.000 canais em direto e 200.000 filmes e séries em até 4K pela sua internet. Funciona em Firestick, Smart TV, Android e iPhone. Sem contrato, teste grátis de 24 horas.",
+    "IPTV Portugal com preço fixo e sem surpresas: mais de 50.000 canais em direto e 200.000 filmes e séries em até 4K pela sua internet. Funciona em Firestick, Smart TV, Android e iPhone. Teste 24 horas antes de pagar, sem contrato.",
   keywords: [
     "IPTV Portugal",
     "Portugal IPTV",
@@ -57,13 +57,13 @@ export const metadata: Metadata = {
     siteName: "IPTV Portugal",
     title: "IPTV Portugal | +50.000 Canais em 4K, Teste Grátis de 24 Horas",
     description:
-      "Uma subscrição IPTV Portugal com mais de 50.000 canais em direto e 200.000 filmes e séries em até 4K. Sem antena, sem contrato, teste grátis de 24 horas.",
+      "IPTV Portugal sem letras pequenas: mais de 50.000 canais em direto e 200.000 filmes e séries em até 4K, preço fixo e teste de 24 horas antes de pagar.",
   },
   twitter: {
     card: "summary_large_image",
     title: "IPTV Portugal | +50.000 Canais em 4K, Teste Grátis de 24 Horas",
     description:
-      "Uma subscrição IPTV Portugal com mais de 50.000 canais em direto e 200.000 filmes e séries em até 4K. Sem antena, sem contrato, teste grátis de 24 horas.",
+      "IPTV Portugal sem letras pequenas: mais de 50.000 canais em direto e 200.000 filmes e séries em até 4K, preço fixo e teste de 24 horas antes de pagar.",
   },
   robots: {
     index: true,

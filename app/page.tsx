@@ -23,7 +23,7 @@ const BASE_URL = SITE_URL;
 
 const TITLE = "IPTV Portugal 2026 — +50.000 Canais em Direto e Subscrição 4K";
 const DESCRIPTION =
-  "Uma subscrição de IPTV Portugal com mais de 50.000 canais em direto e 200.000 filmes e séries em até 4K, transmitidos pela sua internet. Funciona em Firestick, Smart TV, Android e iPhone. Planos desde 12,99€, teste grátis de 24 horas.";
+  "IPTV Portugal com preço fixo e sem letras pequenas: mais de 50.000 canais em direto e 200.000 filmes e séries em até 4K pela sua internet. Funciona em Firestick, Smart TV, Android e iPhone. Planos desde 12,99€ sem descontos falsos, teste 24 horas antes de pagar.";
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },

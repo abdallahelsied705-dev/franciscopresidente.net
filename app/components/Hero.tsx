@@ -173,7 +173,7 @@ export default function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-live-400 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-live-500" />
             </span>
-            A transmitir em direto por todo o Portugal
+            Preço fixo, sem letras pequenas
             <span className="leading-none">🇵🇹</span>
           </div>
 
@@ -183,9 +183,9 @@ export default function Hero() {
           </h1>
 
           <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-zinc-400 sm:text-xl lg:mx-0">
-            Uma subscrição de IPTV Portugal com mais de 50.000 canais em direto e 200.000 filmes e séries em até 4K,
-            entregues diretamente pela sua internet. Sem antena parabólica, sem contrato de dois anos e sem buffering
-            numa ligação estável — apenas streaming fiável nos aparelhos que já tem.
+            IPTV Portugal com um preço que não muda e nada escondido nas entrelinhas: mais de 50.000 canais em
+            direto e 200.000 filmes e séries em até 4K, pela sua internet. Sem descontos inventados, sem contratos de
+            dois anos — experimente 24 horas, pague uma vez e veja nos aparelhos que já tem.
           </p>
 
           <div

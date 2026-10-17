@@ -60,7 +60,7 @@ export default function Features() {
               Tudo o que precisa, <span className="text-gradient">nada do que não precisa</span>
             </>
           }
-          subtitle="Feito para quem em Portugal quer que simplesmente funcione. Sem contratos, sem cobranças-surpresa, sem termos técnicos."
+          subtitle="Feito para quem está farto do cabo caro e de ofertas com letras pequenas. Um preço que não muda, sem cobranças-surpresa e sem jargão."
         />
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">

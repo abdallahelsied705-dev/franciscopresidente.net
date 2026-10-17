@@ -105,7 +105,7 @@ export default function IptvUkGuide() {
         {/* Facts + prices */}
         <div className="flex flex-col gap-6 lg:col-span-2">
           <div className="reveal glass rounded-3xl p-6" style={{ "--delay": "100ms" } as React.CSSProperties}>
-            <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">IPTV Portugal num relance</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-400">IPTV Portugal em números</h3>
             <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-5">
               {facts.map((f) => (
                 <div key={f.label}>

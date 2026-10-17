@@ -59,7 +59,7 @@ export default function Channels() {
               <span className="text-gradient">50.000+</span> canais ao seu alcance
             </>
           }
-          subtitle="Todos os grandes canais portugueses, o desporto em direto que as pessoas realmente procuram e milhares de opções internacionais."
+          subtitle="Os canais portugueses de sempre, o desporto em direto que interessa e milhares de opções internacionais — tudo numa lista, sem pacotes a somar à fatura."
         />
       </div>
 
