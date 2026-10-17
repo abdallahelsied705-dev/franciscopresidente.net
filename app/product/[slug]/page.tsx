@@ -1,0 +1,416 @@
+import { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { Check, Star } from "lucide-react";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import WhatsAppButton from "../../components/WhatsAppButton";
+import JsonLd from "../../components/JsonLd";
+import { products, getProduct, getRelatedProducts } from "../../lib/products";
+import { SITE_URL } from "../../lib/site";
+
+const BASE_URL = SITE_URL;
+
+export async function generateStaticParams() {
+  return products.map((p) => ({ slug: p.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const product = getProduct(slug);
+  if (!product) return {};
+  return {
+    title: { absolute: product.metaTitle },
+    description: product.metaDescription,
+    alternates: { canonical: `${BASE_URL}/product/${slug}` },
+    openGraph: {
+      title: product.metaTitle,
+      description: product.metaDescription,
+      url: `${BASE_URL}/product/${slug}`,
+    },
+  };
+}
+
+const TRIAL_LINK = "https://wa.me/212707711512?text=IPTV%20Portugal%20-%20Teste%20Gr%C3%A1tis%20de%2024%20Horas";
+
+const whatsIncluded = [
+  "+50.000 Canais em Direto",
+  "200.000+ VOD",
+  "Qualidade 4K / FHD / HD",
+  "Gravação TV de 7 Dias",
+  "Guia de Programação EPG",
+  "Tecnologia Anti-Bloqueio",
+  "Atualizações Automáticas",
+  "Multi-Aparelho (1–4)",
+  "Suporte 24/7",
+  "Ajuda Grátis na Instalação",
+  "Compatível com VPN",
+  "Reembolso em 48h Se Não Funcionar",
+];
+
+function getMonths(slug: string): string {
+  const map: Record<string, string> = {
+    "1-mes-iptv-portugal": "1 Mês",
+    "3-meses-iptv-portugal": "3 Meses",
+    "6-meses-iptv-portugal": "6 Meses",
+    "12-meses-iptv-portugal": "12 Meses",
+    "24-meses-iptv-portugal": "24 Meses",
+  };
+  return map[slug] ?? "—";
+}
+
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const product = getProduct(slug);
+  if (!product) notFound();
+
+  const relatedProducts = getRelatedProducts(slug, 4);
+  const waSubscribeLink = `https://wa.me/212707711512?text=${encodeURIComponent(product.whatsappMessage)}`;
+  const priceLabel = `${product.price.toLocaleString("pt-PT")}€`;
+
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.metaDescription,
+    image: `${BASE_URL}/opengraph-image`,
+    brand: { "@type": "Brand", name: "IPTV Portugal" },
+    offers: {
+      "@type": "Offer",
+      price: product.price.toString(),
+      priceCurrency: "EUR",
+      availability: "https://schema.org/InStock",
+      priceValidUntil: "2026-12-31",
+      url: `${BASE_URL}/product/${product.slug}`,
+    },
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Início", item: BASE_URL },
+      { "@type": "ListItem", position: 2, name: "Planos", item: `${BASE_URL}/product` },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.name,
+        item: `${BASE_URL}/product/${product.slug}`,
+      },
+    ],
+  };
+
+  return (
+    <>
+      <JsonLd data={productSchema} />
+      <JsonLd data={breadcrumbSchema} />
+      <Navbar />
+
+      <main className="bg-ink-900 pt-[100px]">
+
+        {/* Breadcrumb */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
+          <nav className="text-zinc-500 text-sm flex items-center gap-1.5 flex-wrap">
+            <Link href="/" className="hover:text-white transition-colors">Início</Link>
+            <span>/</span>
+            <Link href="/product" className="hover:text-white transition-colors">Planos</Link>
+            <span>/</span>
+            <span className="text-zinc-300">{product.name}</span>
+          </nav>
+        </div>
+
+        {/* Hero */}
+        <section className="py-16 px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              {/* Left: text */}
+              <div>
+                {product.badge && (
+                  <span className="inline-block bg-brand-500/15 text-brand-400 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-4">
+                    {product.badge}
+                  </span>
+                )}
+                <h1 className="text-3xl sm:text-5xl font-bold text-white leading-tight mb-4">
+                  {product.h1}
+                </h1>
+                <p className="text-zinc-400 text-lg leading-relaxed mb-6">
+                  {product.heroSubtitle}
+                </p>
+
+                {/* Price badge */}
+                <div className="inline-flex items-baseline gap-2 bg-ink-800 border border-brand-500/30 rounded-2xl px-5 py-3 mb-8">
+                  <span className="text-4xl font-extrabold text-white">{priceLabel}</span>
+                  <span className="text-zinc-400 text-sm">{product.period}</span>
+                </div>
+
+                {/* Star rating */}
+                <div className="flex items-center gap-2 mb-8">
+                  <div className="flex items-center gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={15} className="fill-brand-400 text-brand-400" />
+                    ))}
+                  </div>
+                  <span className="text-zinc-400 text-sm">Experimente grátis 24 horas antes de comprar</span>
+                </div>
+
+                {/* CTAs */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a
+                    href={waSubscribeLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-brand-500 hover:bg-brand-400 text-white font-semibold px-6 py-3 rounded-full transition-colors text-sm text-center"
+                  >
+                    Subscrever Agora — {priceLabel}
+                  </a>
+                  <a
+                    href={TRIAL_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="border border-white/15 hover:border-brand-500/40 text-zinc-300 hover:text-white font-medium px-6 py-3 rounded-full transition-colors text-sm text-center"
+                  >
+                    Teste Grátis de 24 Horas
+                  </a>
+                </div>
+              </div>
+
+              {/* Right: TV illustration */}
+              <div className="flex items-center justify-center">
+                <svg
+                  viewBox="0 0 320 220"
+                  className="w-full max-w-[320px]"
+                  aria-hidden="true"
+                >
+                  {/* TV body */}
+                  <rect x="10" y="10" width="300" height="180" rx="16" fill="#1d0f18" stroke="#f25c23" strokeWidth="2" />
+                  {/* Screen bezel */}
+                  <rect x="24" y="22" width="272" height="148" rx="8" fill="#140a11" />
+                  {/* Portuguese flag — simplified: green left, red right, yellow armillary */}
+                  <rect x="26" y="24" width="268" height="144" rx="6" fill="#DA291C" />
+                  <rect x="26" y="24" width="107" height="144" fill="#046A38" />
+                  <circle cx="133" cy="96" r="24" fill="none" stroke="#FFD100" strokeWidth="4" />
+                  <circle cx="133" cy="96" r="12" fill="#DA291C" stroke="#FFF" strokeWidth="2" />
+                  {/* Channel info overlay */}
+                  <rect x="26" y="140" width="268" height="32" rx="0" fill="rgba(0,0,0,0.65)" />
+                  <text x="40" y="160" fill="#ff9d72" fontSize="11" fontFamily="monospace" fontWeight="bold">
+                    IPTV Portugal
+                  </text>
+                  <text x="188" y="160" fill="white" fontSize="10" fontFamily="monospace">
+                    +50.000 Canais
+                  </text>
+                  {/* Stand */}
+                  <rect x="140" y="190" width="40" height="14" rx="4" fill="#371f30" />
+                  <rect x="110" y="202" width="100" height="8" rx="4" fill="#4a2b40" />
+                  {/* Glow under TV */}
+                  <ellipse cx="160" cy="215" rx="90" ry="6" fill="#f25c23" opacity="0.14" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* What's Included */}
+        <section className="py-20 px-4 bg-ink-950 border-y border-white/5">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <p className="text-brand-400 text-sm font-semibold uppercase tracking-widest mb-3">
+                Tudo Incluído
+              </p>
+              <h2 className="text-3xl font-bold text-white">
+                O que inclui a subscrição {product.name}
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {whatsIncluded.map((item) => (
+                <div key={item} className="flex items-center gap-3 bg-ink-800 border border-white/5 rounded-xl px-5 py-3.5">
+                  <span className="w-6 h-6 bg-brand-500/15 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Check size={12} className="text-brand-400" />
+                  </span>
+                  <span className="text-zinc-200 text-sm font-medium">{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Who Is It For */}
+        <section className="py-20 px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <p className="text-brand-400 text-sm font-semibold uppercase tracking-widest mb-3">Perfeito Para</p>
+              <h2 className="text-3xl font-bold text-white">Para quem é o {product.name}?</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {product.whoIsItFor.map((item) => (
+                <div key={item.title} className="bg-ink-800 border border-white/5 hover:border-brand-500/20 rounded-2xl p-7 transition-all">
+                  <div className="w-10 h-10 bg-brand-500/15 rounded-xl flex items-center justify-center mb-4">
+                    <Check size={18} className="text-brand-400" />
+                  </div>
+                  <h3 className="text-white font-semibold text-base mb-2">{item.title}</h3>
+                  <p className="text-zinc-400 text-sm leading-relaxed">{item.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Plan Highlights */}
+        <section className="py-16 px-4 bg-ink-950 border-y border-white/5">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {[
+                { label: "Preço", value: `${priceLabel} único` },
+                { label: "Canais", value: "50.000+" },
+                { label: "Qualidade", value: "4K Ultra HD" },
+                { label: "Acesso", value: getMonths(product.slug) },
+              ].map((stat) => (
+                <div key={stat.label} className="bg-gradient-to-br from-brand-500/10 to-brand-600/5 border border-brand-500/20 rounded-2xl p-5 text-center">
+                  <p className="text-brand-400 text-xs font-semibold uppercase tracking-widest mb-2">{stat.label}</p>
+                  <p className="text-white font-bold text-xl leading-tight">{stat.value}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonials */}
+        <section className="py-20 px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <p className="text-brand-400 text-sm font-semibold uppercase tracking-widest mb-3">Avaliações de Clientes</p>
+              <h2 className="text-3xl font-bold text-white">O que dizem os clientes sobre o {product.name}</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {product.testimonials.map((t) => (
+                <div key={t.name} className="bg-ink-800 border border-white/5 rounded-2xl p-7 flex flex-col gap-4">
+                  <div className="flex items-center gap-0.5">
+                    {[...Array(t.rating)].map((_, i) => (
+                      <Star key={i} size={14} className="fill-brand-400 text-brand-400" />
+                    ))}
+                  </div>
+                  <p className="text-zinc-300 text-sm leading-relaxed flex-1">&ldquo;{t.text}&rdquo;</p>
+                  <div>
+                    <p className="text-white font-semibold text-sm">{t.name}</p>
+                    <p className="text-zinc-500 text-xs">{t.city}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="py-20 px-4 bg-ink-950 border-y border-white/5">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center mb-12">
+              <p className="text-brand-400 text-sm font-semibold uppercase tracking-widest mb-3">FAQ</p>
+              <h2 className="text-3xl font-bold text-white">Perguntas frequentes</h2>
+            </div>
+            <div className="flex flex-col gap-4">
+              {product.faq.map((item) => (
+                <div key={item.q} className="bg-ink-800 border border-white/5 rounded-2xl p-6">
+                  <h3 className="text-white font-semibold mb-2">{item.q}</h3>
+                  <p className="text-zinc-400 text-sm leading-relaxed">{item.a}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA Banner */}
+        <section className="py-20 px-4">
+          <div className="max-w-4xl mx-auto bg-gradient-to-br from-brand-500/20 to-brand-600/10 border border-brand-500/25 rounded-3xl p-10 sm:p-14 text-center">
+            <p className="text-brand-400 text-sm font-semibold uppercase tracking-widest mb-4">Pronto para Ver?</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">Pronto para começar a ver IPTV Portugal?</h2>
+            <p className="text-zinc-400 text-lg mb-8 max-w-xl mx-auto">
+              Obtenha o {product.name} por {priceLabel} — ou experimente grátis durante 24 horas sem cartão de crédito.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <a
+                href={waSubscribeLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-brand-500 hover:bg-brand-400 text-white font-semibold px-8 py-3.5 rounded-full transition-colors text-sm w-full sm:w-auto text-center"
+              >
+                Subscrever Agora — {priceLabel}
+              </a>
+              <a
+                href={TRIAL_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="border border-white/20 hover:border-brand-500/50 text-zinc-300 hover:text-white font-medium px-8 py-3.5 rounded-full transition-colors text-sm w-full sm:w-auto text-center"
+              >
+                Teste Grátis de 24 Horas
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* Related Plans */}
+        <section className="py-16 px-4 bg-ink-950 border-t border-white/5">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-10">
+              <p className="text-brand-400 text-sm font-semibold uppercase tracking-widest mb-3">Outros Planos</p>
+              <h2 className="text-2xl font-bold text-white">Explore outros planos de IPTV Portugal</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+              {relatedProducts.map((rel) => {
+                const relWaLink = `https://wa.me/212707711512?text=${encodeURIComponent(rel.whatsappMessage)}`;
+                return (
+                  <div
+                    key={rel.slug}
+                    className={`relative rounded-2xl border p-6 flex flex-col transition-all ${rel.highlight ? "bg-gradient-to-br from-brand-500 to-brand-600 border-brand-400" : "bg-ink-800 border-white/5 hover:border-brand-500/30"}`}
+                  >
+                    {rel.badge && (
+                      <span className={`absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] font-bold px-2.5 py-0.5 rounded-full whitespace-nowrap ${rel.highlight ? "bg-white text-brand-600" : "bg-brand-500 text-white"}`}>
+                        {rel.badge}
+                      </span>
+                    )}
+                    <h3 className="text-base font-bold mb-1 text-white">{rel.name}</h3>
+                    <div className="flex items-baseline gap-1.5 mb-5">
+                      <span className="text-3xl font-extrabold text-white">{rel.price.toLocaleString("pt-PT")}€</span>
+                      <span className={`text-xs ${rel.highlight ? "text-brand-100" : "text-zinc-400"}`}>{rel.period}</span>
+                    </div>
+                    <div className="flex flex-col gap-2 mt-auto">
+                      <Link
+                        href={`/product/${rel.slug}`}
+                        className={`text-center text-sm font-semibold px-5 py-2 rounded-full transition-colors ${rel.highlight ? "bg-white text-brand-600 hover:bg-brand-50" : "bg-brand-500 hover:bg-brand-400 text-white"}`}
+                      >
+                        Ver Plano
+                      </Link>
+                      <a
+                        href={relWaLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`text-center text-xs font-medium px-5 py-2 rounded-full transition-colors ${rel.highlight ? "bg-white/20 hover:bg-white/30 text-white" : "border border-white/10 hover:border-brand-500/40 text-zinc-400 hover:text-white"}`}
+                      >
+                        Subscrever Agora
+                      </a>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="text-center mt-8">
+              <Link href="/product" className="text-brand-400 hover:text-brand-300 text-sm font-medium transition-colors">
+                Ver todos os planos →
+              </Link>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <Footer />
+      <WhatsAppButton />
+    </>
+  );
+}
